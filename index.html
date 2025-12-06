@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quantified Self – Screen Time Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+        h1, h2, h3 {
+            text-align: center;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .summary {
+            background: #eef2f5;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            max-height: 900px;
+            overflow-y: scroll;
+        }
+        .summary-page {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #ccc;
+        }
+        .chart-box {
+            margin: 40px 0;
+        }
+        select {
+            padding: 8px;
+            margin: 10px 0;
+        }
+        .question-box {
+            background: #f9fafb;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 5px solid #007bff;
+        }
+        .name {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>📱 Quantified Self – Screen Time Dashboard</h1>
+    <div class="name">Created by: <strong>Rishabh Bansal</strong></div>
+    <h3>Profile: 32-Year-Old Indian Male (Fictional Dataset)</h3>
+
+    <!-- 3 PAGE STYLE SUMMARY -->
+    <div class="summary">
+        <h2>Written Project Report (Embedded in Dashboard)</h2>
+
+        <div class="summary-page">
+            <h3>Page 1: Data Collection & Objectives</h3>
+            <p>
+                This project is based on the Quantified Self concept, which focuses on using personal data 
+                to understand and improve daily habits through visualization. For this dashboard, I created 
+                a fictional dataset representing the daily screen time usage of a 32-year-old Indian male 
+                over a 14-day period. This data includes total screen time in hours, types of applications used, 
+                and time-of-day usage patterns.
+            </p>
+            <p>
+                The main objective of this project is to explore how screen time impacts productivity, sleep 
+                quality, and digital well-being. I chose screen time as a focus area because it strongly 
+                affects modern lifestyle, mental health, and work-life balance. The data was structured 
+                manually to simulate realistic daily behavior patterns.
+            </p>
+        </div>
+
+        <div class="summary-page">
+            <h3>Page 2: Tools, Storage & Visualization Methods</h3>
+            <p>
+                The data was stored directly within the website code using JavaScript arrays. This approach 
+                was chosen because it allows easy access to the data without relying on external databases. 
+                For visualization, I used HTML, CSS, JavaScript, and the Chart.js library, which provides 
+                interactive and responsive graphs.
+            </p>
+            <p>
+                Multiple types of visualizations were used including line charts, pie charts, bar charts, 
+                and scatter plots. Each visualization was chosen based on its suitability for showing 
+                trends, comparisons, distributions, and correlations. An interactive dropdown filter was 
+                added to allow users to explore screen time data based on weekdays and weekends.
+            </p>
+        </div>
+
+        <div class="summary-page">
+            <h3>Page 3: Analysis & Insights</h3>
+            <p>
+                From the visual analysis, it is observed that screen time is generally higher during weekends 
+                compared to weekdays. The line chart shows a noticeable upward trend in screen usage on 
+                Saturdays and Sundays. The pie chart reveals that social media and work-related applications 
+                consume the majority of screen time.
+            </p>
+            <p>
+                The scatter plot comparing screen time and sleep duration shows a negative correlation, 
+                meaning that higher screen time is often associated with reduced sleep hours. This dashboard 
+                demonstrates how data visualization can help individuals become more aware of their habits 
+                and make better lifestyle decisions based on data-driven insights.
+            </p>
+        </div>
+    </div>
+
+    <!-- QUESTIONS -->
+    <h2>Data-Driven Questions</h2>
+
+    <div class="question-box">1. How does my daily screen time vary over two weeks?</div>
+    <div class="question-box">2. Do weekdays have higher screen time compared to weekends?</div>
+    <div class="question-box">3. Which app categories consume most of my time?</div>
+    <div class="question-box">4. At what time of day is screen usage highest?</div>
+    <div class="question-box">5. Does higher screen time correlate with reduced sleep duration?</div>
+
+    <!-- INTERACTIVE FILTER -->
+    <h2>Interactive Filter</h2>
+    <p>Select Day Type:</p>
+    <select id="dayFilter" onchange="updateChart()">
+        <option value="all">All Days</option>
+        <option value="weekday">Weekdays</option>
+        <option value="weekend">Weekends</option>
+    </select>
+
+    <!-- CHARTS -->
+    <div class="chart-box">
+        <h3>1. Daily Screen Time (Hours)</h3>
+        <canvas id="dailyChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+        <h3>2. App Category Usage Distribution</h3>
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+        <h3>3. Screen Usage by Time of Day</h3>
+        <canvas id="timeChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+        <h3>4. Screen Time vs Sleep Duration</h3>
+        <canvas id="scatterChart"></canvas>
+    </div>
+</div>
+
+<script>
+    const labels = ["Mon1","Tue1","Wed1","Thu1","Fri1","Sat1","Sun1","Mon2","Tue2","Wed2","Thu2","Fri2","Sat2","Sun2"];
+    const screenTime = [5.5,6,6.5,5,7,8.5,9,5,6,6.2,5.5,7.2,8,9.1];
+    const dayTypes = ["weekday","weekday","weekday","weekday","weekday","weekend","weekend","weekday","weekday","weekday","weekday","weekday","weekend","weekend"];
+    const sleepTime = [7.5,7,6.5,7.8,6,5.5,5,7.6,7.2,6.8,7.4,6.2,5.8,5.2];
+
+    let dailyChart;
+
+    function createDailyChart(filteredData, filteredLabels) {
+        const ctx = document.getElementById('dailyChart').getContext('2d');
+        if (dailyChart) dailyChart.destroy();
+
+        dailyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: filteredLabels,
+                datasets: [{
+                    label: 'Screen Time (Hours)',
+                    data: filteredData,
+                    borderWidth: 2,
+                    fill: false
+                }]
+            }
+        });
+    }
+
+    function updateChart() {
+        const filter = document.getElementById("dayFilter").value;
+        let filteredData = [];
+        let filteredLabels = [];
+
+        for (let i = 0; i < dayTypes.length; i++) {
+            if (filter === "all" || dayTypes[i] === filter) {
+                filteredData.push(screenTime[i]);
+                filteredLabels.push(labels[i]);
+            }
+        }
+        createDailyChart(filteredData, filteredLabels);
+    }
+
+    updateChart();
+
+    new Chart(document.getElementById('categoryChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Social Media', 'Work Apps', 'Video Streaming', 'Games', 'Browsing'],
+            datasets: [{
+                data: [32, 28, 20, 12, 8]
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('timeChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Morning', 'Afternoon', 'Evening', 'Late Night'],
+            datasets: [{
+                label: 'Average Screen Hours',
+                data: [1.5, 2.5, 3.0, 1.8]
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('scatterChart'), {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Screen Time vs Sleep',
+                data: screenTime.map((x, i) => ({ x: x, y: sleepTime[i] })),
+                pointRadius: 6
+            }]
+        },
+        options: {
+            scales: {
+                x: { title: { display: true, text: 'Screen Time (Hours)' } },
+                y: { title: { display: true, text: 'Sleep Duration (Hours)' } }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
